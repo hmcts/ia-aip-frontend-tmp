@@ -143,20 +143,36 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 function getDirectionHistory(req: Request): any[] {
   if (isNonStandardDirectionEnabled(req)) {
     return (req.session.appeal.directions || [])
-            .filter(direction => (
-                direction.directionType === 'sendDirection'
-                && (direction.parties === 'appellant' || direction.parties === 'respondent')))
-            .map(direction => {
-              return {
-                date: moment(direction.dateSent).format('DD MMMM YYYY'),
-                dateObject: new Date(direction.dateSent),
-                text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-                links: [{
-                  ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-                  href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-                }]
-              };
-            });
+      .filter(direction => (
+        direction.directionType === 'sendDirection' &&
+        (direction.parties === 'appellant' || direction.parties === 'respondent' || direction.parties === 'appellantAndRespondent')
+      ))
+      .flatMap(direction => {
+        if (direction.parties === 'appellantAndRespondent') {
+          return ['respondent', 'appellant'].map(party => ({
+            date: moment(direction.dateSent).format('DD MMMM YYYY'),
+            dateObject: new Date(direction.dateSent),
+            text: i18n.pages.overviewPage.timeline.sendDirection[party].text || null,
+            links: [
+              {
+                ...i18n.pages.overviewPage.timeline.sendDirection[party].links[0],
+                href: paths.common.directionHistoryViewer.replace(':id', `${direction.uniqueId}-${party}`)
+              }
+            ]
+          }));
+        }
+        return [{
+          date: moment(direction.dateSent).format('DD MMMM YYYY'),
+          dateObject: new Date(direction.dateSent),
+          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+          links: [
+            {
+              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+            }
+          ]
+        }];
+      });
   } else {
     return [];
   }

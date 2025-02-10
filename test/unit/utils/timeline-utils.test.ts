@@ -699,11 +699,21 @@ describe('timeline-utils', () => {
           explanation: 'explanation 2',
           uniqueId: '987654321',
           directionType: 'sendDirection'
+        },
+        {
+          id: '3',
+          parties: 'appellantAndRespondent',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 3',
+          uniqueId: '159159159',
+          directionType: 'sendDirection'
         }
       ];
       const directionsHistory = getDirectionHistory(req as Request);
 
-      expect(directionsHistory.length).to.be.eql(2);
+      expect(directionsHistory.length).to.be.eql(4);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });
@@ -750,10 +760,20 @@ describe('timeline-utils', () => {
           explanation: 'explanation 4',
           uniqueId: '135135135',
           directionType: 'sendDirection'
+        },
+        {
+          id: '4',
+          parties: 'appellantAndRespondent',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 5',
+          uniqueId: '135135155',
+          directionType: 'sendDirection'
         }
       ];
       const directionsHistory = getDirectionHistory(req as Request);
-      expect(directionsHistory.length).to.be.eql(3);
+      expect(directionsHistory.length).to.be.eql(5);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
       });

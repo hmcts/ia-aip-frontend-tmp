@@ -5228,7 +5228,7 @@ describe('DetailViewController', () => {
       }
     ];
 
-    it('should render detail-viewers/direction-history-viewer.njk for sending direciotn of appellant', () => {
+    it('should render detail-viewers/direction-history-viewer.njk for sending direction of appellant', () => {
       req.session.appeal.directions = directions;
       req.params.id = '123456789';
 
@@ -5282,6 +5282,32 @@ describe('DetailViewController', () => {
         data: expectedSummaryRows,
         previousPage: paths.common.overview
       });
+    });
+
+    it('should render appellant direction when ID includes "-appellant" suffix', () => {
+      req.session.appeal.directions = directions;
+      req.params.id = '123456789-appellant';
+
+      getDirectionHistory(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+        title: i18n.pages.detailViewers.directionHistory.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      }));
+    });
+
+    it('should render respondent direction when ID includes "-respondent" suffix', () => {
+      req.session.appeal.directions = directions;
+      req.params.id = '987654321-respondent';
+
+      getDirectionHistory(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', sinon.match({
+        title: i18n.pages.detailViewers.directionHistory.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      }));
     });
 
     it('should catch error and call next with it', () => {
